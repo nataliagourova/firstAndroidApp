@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">HelloWorld!NataliasApplication</string>
-    <string name="my_name">Natalia Gourova 4/12/2021</string>
+    <string name="my_name">Natalia Gourova 4/20/2021</string>
     <string name="Hello_world">Hello World!</string>
     <string name="bye">Bye!</string>
+    <string name="email_address">email address:</string>
+    <string name="username">username:</string>
+    <string name="date_of_birth">date of birth:</string>
+    <string name="name">name:</string>
+    <string name="submit">Submit</string>
+    <string name="thanks_signup">Thanks for Signing Up %1$s!</string>
 </resources>

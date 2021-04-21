@@ -20,6 +20,6 @@ public class MainActivityTest {
 
     @Test
     public void checkHelloWorldDisplayed() {
-        onView(withId(R.id.helloWorldtext)).check(matches(isDisplayed()));
+        onView(withId(R.id.my_name)).check(matches(isDisplayed()));
     }
 }

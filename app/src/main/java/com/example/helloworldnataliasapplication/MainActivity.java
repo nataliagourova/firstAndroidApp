@@ -8,15 +8,23 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 public class MainActivity extends AppCompatActivity {
+
+    private boolean dobTooEarly = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TextView errorMessage = findViewById(R.id.error_message);
 
         Button submitButton = findViewById(R.id.submit_btn);
         submitButton.setEnabled(false);
@@ -25,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         EditText emailEdit = findViewById(R.id.email_input);
         EditText userNameEdit = findViewById(R.id.username_input);
         EditText dobEdit = findViewById(R.id.dob_input);
-        validateInputs(submitButton, nameEdit, emailEdit, userNameEdit, dobEdit);
+        validateInputs(submitButton, errorMessage, nameEdit, emailEdit, userNameEdit, dobEdit);
 
         submitButton.setOnClickListener(v -> {
             String name = nameEdit.getText().toString();
@@ -38,12 +46,27 @@ public class MainActivity extends AppCompatActivity {
             DatePickerDialog datePickerDialog = new DatePickerDialog(this);
             datePickerDialog.setOnDateSetListener((view, year, month, dayOfMonth) -> {
                 dobEdit.setText(String.format("%d/%d/%d", month, dayOfMonth, year));
+                long numberOfYears = getNumberOfYearsSince(year, month, dayOfMonth);
+
+                dobTooEarly = numberOfYears < 18;
+                submitButton.setEnabled(!dobTooEarly);
+                if (dobTooEarly) {
+                    errorMessage.setText(R.string.err_dob_too_early);
+                } else {
+                    errorMessage.setText("");
+                }
             });
             datePickerDialog.show();
         });
     }
 
-    private void validateInputs(Button submitButton, EditText ... inputs) {
+    private long getNumberOfYearsSince(int year, int month, int dayOfMonth) {
+        LocalDate start = LocalDate.of( year , month , dayOfMonth ) ;
+        LocalDate end = LocalDate.now();
+        return ChronoUnit.YEARS.between( start , end );
+    }
+
+    private void validateInputs(Button submitButton, TextView errorMessage, EditText ... inputs) {
         for(EditText input : inputs) {
             input.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -53,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (dobTooEarly) {
+                        // already handle this
+                        return;
+                    }
+
                     boolean isSubmitEnabled = true;
                     for(EditText input : inputs) {
                         if (input.getText().toString().length() == 0) {
@@ -61,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     submitButton.setEnabled(isSubmitEnabled);
+
+                    if (!isSubmitEnabled) {
+                        errorMessage.setText(R.string.err_empty_form);
+                    } else {
+                        errorMessage.setText("");
+                    }
                 }
 
                 @Override

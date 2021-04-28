@@ -20,6 +20,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final int SUBMIT_CONFIRMATION_ACTIVITY = 1;
+
+    static final String NAME_KEY = "NAME";
+    static final String USERNAME_KEY = "USERNAME";
+    static final String DOB_KEY = "DOB";
+    static final String OCCUPATION_KEY = "OCCUPATION";
+    static final String DESCRIPTION_KEY = "DESCRIPTION";
+    static final String EMAIL_KEY = "EMAIL";
+
     private boolean dobTooEarly = true;
 
     TextView errorMessage;
@@ -43,9 +51,14 @@ public class MainActivity extends AppCompatActivity {
         validateEmptyInputs();
 
         submitButton.setOnClickListener(v -> {
-            String name = nameEdit.getText().toString();
             Intent intent = new Intent(getBaseContext(), SubmitConfirmActivity.class);
-            intent.putExtra("USERNAME", name);
+            intent.putExtra(USERNAME_KEY, userNameEdit.getText().toString());
+            intent.putExtra(NAME_KEY, nameEdit.getText().toString());
+            intent.putExtra(DESCRIPTION_KEY, descriptionEdit.getText().toString());
+            intent.putExtra(OCCUPATION_KEY, occupationEdit.getText().toString());
+            intent.putExtra(EMAIL_KEY, emailEdit.getText().toString());
+            intent.putExtra(DOB_KEY, dobEdit.getText().toString());
+
             startActivityForResult(intent, SUBMIT_CONFIRMATION_ACTIVITY);
         });
 

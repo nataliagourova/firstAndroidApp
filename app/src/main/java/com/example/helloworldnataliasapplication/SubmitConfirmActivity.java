@@ -16,7 +16,7 @@ public class SubmitConfirmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submit_confirm);
         Intent intent = getIntent();
-        String name = intent.getStringExtra("USERNAME");
+        String name = intent.getStringExtra(MainActivity.NAME_KEY);
         String welcomeText = getString(R.string.thanks_signup, name);
         TextView welcomeLabel = findViewById(R.id.welcome_label);
         welcomeLabel.setText(welcomeText);

@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button submitButton = findViewById(R.id.submit_btn);
+        submitButton.setEnabled(false);
 
         EditText nameEdit = findViewById(R.id.name_input);
         EditText emailEdit = findViewById(R.id.email_input);
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    boolean isSubmitEnabled = false;
+                    boolean isSubmitEnabled = true;
                     for(EditText input : inputs) {
                         if (input.getText().toString().length() == 0) {
                             isSubmitEnabled = false;

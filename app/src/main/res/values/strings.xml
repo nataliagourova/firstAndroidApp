@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">HelloWorld!NataliasApplication</string>
-    <string name="my_name">Natalia Gourova 4/20/2021</string>
+    <string name="my_name">Natalia Gourova 4/27/2021</string>
     <string name="Hello_world">Hello World!</string>
     <string name="bye">Bye!</string>
     <string name="email_address">email address:</string>
@@ -9,4 +9,9 @@
     <string name="name">name:</string>
     <string name="submit">Submit</string>
     <string name="thanks_signup">Thanks for Signing Up %1$s!</string>
+    <string name="err_empty_form">Please fill in all the fields.</string>
+    <string name="err_dob_too_early">You are under 18yo. Cannot proceed.</string>
+    <string name="go_back">back</string>
+    <string name="description">Description:</string>
+    <string name="occupation">Occupation:</string>
 </resources>

@@ -75,13 +75,54 @@
         app:layout_constraintTop_toBottomOf="@id/dob_input_label"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <TextView
+        android:id="@+id/description_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/description"
+        app:layout_constraintTop_toBottomOf="@id/dob_input"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/description_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toBottomOf="@id/description_label"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/occupation_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/occupation"
+        app:layout_constraintTop_toBottomOf="@id/description_edit"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/occupation_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/occupation_label"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/submit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/submit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dob_input" />
+        app:layout_constraintTop_toBottomOf="@id/occupation_edit" />
+
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#F00"
+        android:text="@string/err_empty_form"
+        app:layout_constraintTop_toBottomOf="@id/submit_btn"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/my_name"

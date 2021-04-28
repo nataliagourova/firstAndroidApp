@@ -22,21 +22,25 @@ public class MainActivity extends AppCompatActivity {
     private static final int SUBMIT_CONFIRMATION_ACTIVITY = 1;
     private boolean dobTooEarly = true;
 
+    TextView errorMessage;
+    Button submitButton;
+    EditText nameEdit;
+    EditText emailEdit;
+    EditText userNameEdit;
+    EditText dobEdit;
+    EditText descriptionEdit;
+    EditText occupationEdit;
+
+    List<EditText> allFormFields;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        TextView errorMessage = findViewById(R.id.error_message);
-
-        Button submitButton = findViewById(R.id.submit_btn);
+        findViews();
         submitButton.setEnabled(false);
 
-        EditText nameEdit = findViewById(R.id.name_input);
-        EditText emailEdit = findViewById(R.id.email_input);
-        EditText userNameEdit = findViewById(R.id.username_input);
-        EditText dobEdit = findViewById(R.id.dob_input);
-        validateInputs(submitButton, errorMessage, nameEdit, emailEdit, userNameEdit, dobEdit);
+        validateEmptyInputs();
 
         submitButton.setOnClickListener(v -> {
             String name = nameEdit.getText().toString();
@@ -63,14 +67,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void findViews() {
+        errorMessage = findViewById(R.id.error_message);
+        submitButton = findViewById(R.id.submit_btn);
+        nameEdit = findViewById(R.id.name_input);
+        emailEdit = findViewById(R.id.email_input);
+        userNameEdit = findViewById(R.id.username_input);
+        dobEdit = findViewById(R.id.dob_input);
+        occupationEdit = findViewById(R.id.occupation_edit);
+        descriptionEdit = findViewById(R.id.description_edit);
+
+        allFormFields = Arrays.asList(
+                nameEdit,
+                emailEdit,
+                userNameEdit,
+                dobEdit,
+                occupationEdit,
+                descriptionEdit);
+    }
+
     private long getNumberOfYearsSince(int year, int month, int dayOfMonth) {
         LocalDate start = LocalDate.of(year, month, dayOfMonth);
         LocalDate end = LocalDate.now();
         return ChronoUnit.YEARS.between(start, end);
     }
 
-    private void validateInputs(Button submitButton, TextView errorMessage, EditText... inputs) {
-        for (EditText input : inputs) {
+    private void validateEmptyInputs() {
+        for (EditText input : allFormFields) {
             input.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -85,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     boolean isSubmitEnabled = true;
-                    for (EditText input : inputs) {
+                    for (EditText input : allFormFields) {
                         if (input.getText().toString().length() == 0) {
                             isSubmitEnabled = false;
                             break;
@@ -118,20 +141,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == SUBMIT_CONFIRMATION_ACTIVITY
                 && resultCode == SubmitConfirmActivity.RESULT_BACK) {
-            List<TextView> views = Arrays.asList(
-                    findViewById(R.id.error_message),
-                    findViewById(R.id.name_input),
-                    findViewById(R.id.email_input),
-                    findViewById(R.id.username_input),
-                    findViewById(R.id.dob_input)
-            );
-            for (TextView view : views) {
+            for (TextView view : allFormFields) {
                 view.setText("");
             }
 
-            TextView errorMessage = findViewById(R.id.error_message);
             errorMessage.setText(R.string.err_empty_form);
-            Button submitButton = findViewById(R.id.submit_btn);
             submitButton.setEnabled(false);
         }
 

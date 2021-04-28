@@ -1,13 +1,15 @@
 package com.example.helloworldnataliasapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class SubmitConfirmActivity extends AppCompatActivity {
+
+    static final int RESULT_BACK = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,5 +20,10 @@ public class SubmitConfirmActivity extends AppCompatActivity {
         String welcomeText = getString(R.string.thanks_signup, name);
         TextView welcomeLabel = findViewById(R.id.welcome_label);
         welcomeLabel.setText(welcomeText);
+        Button backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> {
+            setResult(RESULT_BACK);
+            finish();
+        });
     }
 }

@@ -11,4 +11,5 @@
     <string name="thanks_signup">Thanks for Signing Up %1$s!</string>
     <string name="err_empty_form">Please fill in all the fields.</string>
     <string name="err_dob_too_early">You are under 18yo. Cannot proceed.</string>
+    <string name="go_back">back</string>
 </resources>

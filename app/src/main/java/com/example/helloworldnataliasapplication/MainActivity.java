@@ -10,13 +10,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final int SUBMIT_CONFIRMATION_ACTIVITY = 1;
     private boolean dobTooEarly = true;
 
     @Override
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             String name = nameEdit.getText().toString();
             Intent intent = new Intent(getBaseContext(), SubmitConfirmActivity.class);
             intent.putExtra("USERNAME", name);
-            startActivity(intent);
+            startActivityForResult(intent, SUBMIT_CONFIRMATION_ACTIVITY);
         });
 
         dobEdit.setOnClickListener(v -> {
@@ -61,13 +64,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private long getNumberOfYearsSince(int year, int month, int dayOfMonth) {
-        LocalDate start = LocalDate.of( year , month , dayOfMonth ) ;
+        LocalDate start = LocalDate.of(year, month, dayOfMonth);
         LocalDate end = LocalDate.now();
-        return ChronoUnit.YEARS.between( start , end );
+        return ChronoUnit.YEARS.between(start, end);
     }
 
-    private void validateInputs(Button submitButton, TextView errorMessage, EditText ... inputs) {
-        for(EditText input : inputs) {
+    private void validateInputs(Button submitButton, TextView errorMessage, EditText... inputs) {
+        for (EditText input : inputs) {
             input.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     boolean isSubmitEnabled = true;
-                    for(EditText input : inputs) {
+                    for (EditText input : inputs) {
                         if (input.getText().toString().length() == 0) {
                             isSubmitEnabled = false;
                             break;
@@ -109,5 +112,29 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main_menu, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == SUBMIT_CONFIRMATION_ACTIVITY
+                && resultCode == SubmitConfirmActivity.RESULT_BACK) {
+            List<TextView> views = Arrays.asList(
+                    findViewById(R.id.error_message),
+                    findViewById(R.id.name_input),
+                    findViewById(R.id.email_input),
+                    findViewById(R.id.username_input),
+                    findViewById(R.id.dob_input)
+            );
+            for (TextView view : views) {
+                view.setText("");
+            }
+
+            TextView errorMessage = findViewById(R.id.error_message);
+            errorMessage.setText(R.string.err_empty_form);
+            Button submitButton = findViewById(R.id.submit_btn);
+            submitButton.setEnabled(false);
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -2,6 +2,7 @@ package com.example.helloworldnataliasapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -24,7 +25,6 @@ public class SubmitConfirmActivity extends AppCompatActivity {
         String description = intent.getStringExtra(MainActivity.DESCRIPTION_KEY);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-
 
         ProfileFragment profileFragment =
                 ProfileFragment.newInstance(name, dob, occupation, description);
@@ -55,6 +55,11 @@ public class SubmitConfirmActivity extends AppCompatActivity {
             return true;
         });
 
+        Button backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> {
+            setResult(RESULT_BACK);
+            finish();
+        });
 
         getSupportFragmentManager()
                 .beginTransaction()

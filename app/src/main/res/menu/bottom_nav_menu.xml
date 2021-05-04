@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile_tab"
+        android:enabled="true"
+        android:title="Profile"/>
+    <item
+        android:id="@+id/settings_tab"
+        android:enabled="true"
+        android:title="Settings"/>
+    <item
+        android:id="@+id/matches_tab"
+        android:enabled="true"
+        android:title="Matches"/>
+</menu>

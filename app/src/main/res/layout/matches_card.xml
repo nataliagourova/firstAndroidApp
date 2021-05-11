@@ -28,12 +28,28 @@
             <TextView
                 android:id="@+id/matches_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/matches_age"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"/>
         </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/like_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="#00000000"
+                android:src="@drawable/ic_baseline_favorite_24"
+                ></ImageButton>
+        </RelativeLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,10 +17,12 @@ import java.util.List;
 
 public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<MatchesCardViewHolder> {
 
+    private Context appContext;
     private List<MatchEntry> matchesList;
     private ImageRequester imageRequester;
 
     MatchesCardRecyclerViewAdapter(Context appContext, List<MatchEntry> matchesList) {
+        this.appContext = appContext;
         this.matchesList = matchesList;
         imageRequester = ImageRequester.getInstance(appContext);
     }
@@ -36,8 +39,11 @@ public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<Matches
         if (matchesList != null && position < matchesList.size()) {
             MatchEntry match = matchesList.get(position);
             holder.matchesName.setText(match.name);
-            holder.matchesAge.setText(match.age);
+            holder.matchesAge.setText(match.age + " years old");
             imageRequester.setImageFromUrl(holder.matchesImage, match.url);
+            holder.likeButton.setOnClickListener(v -> {
+                Toast.makeText(appContext, "Liked " + match.name + "!!!!", Toast.LENGTH_SHORT).show();
+            });
         }
     }
 

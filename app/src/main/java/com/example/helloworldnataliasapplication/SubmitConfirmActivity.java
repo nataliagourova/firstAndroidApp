@@ -29,7 +29,7 @@ public class SubmitConfirmActivity extends AppCompatActivity {
         ProfileFragment profileFragment =
                 ProfileFragment.newInstance(name, dob, occupation, description);
         SettingsFragment settingsFragment = SettingsFragment.newInstance();
-        MatchesFragment matchesFragment = MatchesFragment.newInstance();
+        MatchesFragment matchesFragment = new MatchesFragment();
 
         bottomNav.setOnNavigationItemSelectedListener(item -> {
             Fragment fragment;

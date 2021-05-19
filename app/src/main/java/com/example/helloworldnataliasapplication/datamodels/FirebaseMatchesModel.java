@@ -41,8 +41,7 @@ public class FirebaseMatchesModel {
     public void saveMatchLike(MatchEntry item) {
         DocumentReference matchDocRef = db.collection("matches").document(item.uid);
         Map<String, Object> data = new HashMap<>();
-        data.put("like", item.liked);
-//        data.put("name", item.name + ", liked: " + item.liked);
+        data.put("liked", item.liked);
         matchDocRef.update(data);
     }
 

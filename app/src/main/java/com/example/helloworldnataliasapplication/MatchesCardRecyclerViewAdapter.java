@@ -53,6 +53,11 @@ public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<Matches
             MatchEntry match = matchesList.get(position);
             holder.matchesName.setText(match.name);
             imageRequester.setImageFromUrl(holder.matchesImage, match.imageUrl);
+            int likeButtonImage =
+                    match.liked
+                            ? R.drawable.ic_baseline_favorite_24
+                            : R.drawable.ic_baseline_favorite_border_24;
+            holder.likeButton.setImageResource(likeButtonImage);
             holder.likeButton.setOnClickListener(v -> {
 
                 if (this.matchLikedListener == null) {
@@ -61,6 +66,12 @@ public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<Matches
                     return;
                 }
 
+                match.liked = !match.liked;
+                int likeImage =
+                        match.liked
+                                ? R.drawable.ic_baseline_favorite_24
+                                : R.drawable.ic_baseline_favorite_border_24;
+                holder.likeButton.setImageResource(likeImage);
                 this.matchLikedListener.accept(match);
             });
         }

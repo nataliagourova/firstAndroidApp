@@ -9,7 +9,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Adapter used to show a simple grid of products.
@@ -17,14 +19,25 @@ import java.util.List;
 
 public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<MatchesCardViewHolder> {
 
+    private Consumer<MatchEntry> matchLikedListener;
     private Context appContext;
     private List<MatchEntry> matchesList;
     private ImageRequester imageRequester;
 
-    MatchesCardRecyclerViewAdapter(Context appContext, List<MatchEntry> matchesList) {
+    MatchesCardRecyclerViewAdapter(Context appContext) {
         this.appContext = appContext;
-        this.matchesList = matchesList;
+        this.matchesList = new ArrayList<>();
         imageRequester = ImageRequester.getInstance(appContext);
+        this.matchLikedListener = null;
+    }
+
+    public void setMatchLikedListener(Consumer<MatchEntry> callback) {
+        this.matchLikedListener = callback;
+    }
+
+    public void setMatches(List<MatchEntry> matches) {
+        this.matchesList = new ArrayList<>(matches);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -39,10 +52,16 @@ public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<Matches
         if (matchesList != null && position < matchesList.size()) {
             MatchEntry match = matchesList.get(position);
             holder.matchesName.setText(match.name);
-            holder.matchesAge.setText(match.age + " years old");
-            imageRequester.setImageFromUrl(holder.matchesImage, match.url);
+            imageRequester.setImageFromUrl(holder.matchesImage, match.imageUrl);
             holder.likeButton.setOnClickListener(v -> {
-                Toast.makeText(appContext, "Liked " + match.name + "!!!!", Toast.LENGTH_SHORT).show();
+
+                if (this.matchLikedListener == null) {
+                    Toast.makeText(appContext,
+                            "Listener not set, liked " + match.name + "!!!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                this.matchLikedListener.accept(match);
             });
         }
     }

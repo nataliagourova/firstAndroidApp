@@ -25,19 +25,27 @@ import java.util.List;
 public class MatchEntry {
     private static final String TAG = MatchEntry.class.getSimpleName();
 
-    public final String name;
-    public final Uri dynamicUrl;
-    public final String url;
-    public final String age;
-    public final String description;
+    public String name;
+    public String imageUrl;
+    public String uid;
+    public Boolean liked;
+    public String lat;
+    public String longtitude;
 
-    public MatchEntry(
-            String name, String dynamicUrl, String url, String age, String description) {
+    public MatchEntry() { }
+
+    public MatchEntry(String name,
+                      String imageUrl,
+                      String uid,
+                      Boolean liked,
+                      String lat,
+                      String longtitude) {
         this.name = name;
-        this.dynamicUrl = Uri.parse(dynamicUrl);
-        this.url = url;
-        this.age = age;
-        this.description = description;
+        this.imageUrl = imageUrl;
+        this.uid = uid;
+        this.liked = liked;
+        this.lat = lat;
+        this.longtitude = longtitude;
     }
 
     /**
@@ -64,7 +72,8 @@ public class MatchEntry {
         }
         String jsonMatchesString = writer.toString();
         Gson gson = new Gson();
-        Type matchListType = new TypeToken<ArrayList<MatchEntry>>() {}.getType();
+        Type matchListType = new TypeToken<ArrayList<MatchEntry>>() {
+        }.getType();
         return gson.fromJson(jsonMatchesString, matchListType);
     }
 }

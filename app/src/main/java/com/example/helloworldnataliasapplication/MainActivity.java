@@ -143,6 +143,11 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+//
+//    FirebaseAuth firebaseAuth = FirebaseAuthGetter.getFirebaseAuth();
+//    FirebaseUser...
+//
+//    user.setPhotoURL(Ibjects.requirenonNull(firebaseUser.getPhotoUrl()).toString());
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

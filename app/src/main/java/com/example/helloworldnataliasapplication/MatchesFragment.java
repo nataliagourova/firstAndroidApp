@@ -45,6 +45,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.helloworldnataliasapplication.viewmodels.FirebaseMatchesViewModel;
+
+import java.util.function.Consumer;
+
 public class MatchesFragment extends Fragment {
 
     @Override
@@ -59,13 +63,23 @@ public class MatchesFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
-        MatchesCardRecyclerViewAdapter adapter = new MatchesCardRecyclerViewAdapter(
-                getActivity().getApplicationContext(),
-                MatchEntry.initMatchEntryList(getResources()));
+        MatchesCardRecyclerViewAdapter adapter =
+                new MatchesCardRecyclerViewAdapter(getActivity().getApplicationContext());
         recyclerView.setAdapter(adapter);
         int largePadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing);
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing_small);
         recyclerView.addItemDecoration(new MatchItemDecoration(largePadding, smallPadding));
+
+
+        FirebaseMatchesViewModel viewModel = new FirebaseMatchesViewModel();
+        adapter.setMatchLikedListener(
+                new Consumer<MatchEntry>() {
+                    @Override
+                    public void accept(MatchEntry match) {
+                        viewModel.saveMatchLike(match);
+                    }
+                });
+        viewModel.getMatches(adapter::setMatches);
 
         return view;
     }

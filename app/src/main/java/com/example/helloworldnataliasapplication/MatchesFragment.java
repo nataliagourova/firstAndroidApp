@@ -37,12 +37,14 @@ package com.example.helloworldnataliasapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -54,7 +56,14 @@ import com.example.helloworldnataliasapplication.viewmodels.FirebaseMatchesViewM
 
 import java.util.function.Consumer;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 public class MatchesFragment extends Fragment {
+    private static final long EVERY_MINUTE = 60_1000;
+    private static final float MIN_DISTANCE_MILES = 10.0f;
+
     LocationManager locationManager;
 
     @Override
@@ -95,12 +104,33 @@ public class MatchesFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        showLocationSettingsDialogIfNeeded();
+        if (!isLocationEnabled()) {
+            return;
+        }
+
+        if (!arePermissionsGranted()) {
+            Toast.makeText(
+                    getActivity(),
+                    R.string.location_permissions_not_granted_message,
+                    Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+
+        locationManager
+                .requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        EVERY_MINUTE,
+                        MIN_DISTANCE_MILES,
+                        this::onLocationUpdated);
     }
 
-    private void showLocationSettingsDialogIfNeeded() {
-        if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+    private boolean isLocationEnabled() {
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            return true;
+        } else {
             showAlert();
+            return false;
         }
     }
 
@@ -114,5 +144,19 @@ public class MatchesFragment extends Fragment {
                     startActivity(myIntent);
                 });
         dialog.show();
+    }
+
+    private boolean arePermissionsGranted() {
+        return getActivity().checkSelfPermission(ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
+                || getActivity().checkSelfPermission(ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED;
+    }
+
+    private void onLocationUpdated(Location location) {
+        Toast.makeText(
+                getActivity(),
+                "Location: " + location.getLongitude() + " longitude, " + location.getLatitude() + "latitude",
+                Toast.LENGTH_SHORT)
+                .show();
+
     }
 }

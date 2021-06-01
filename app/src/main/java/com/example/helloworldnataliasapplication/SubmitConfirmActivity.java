@@ -4,14 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import static android.Manifest.permission.ACCESS_BACKGROUND_LOCATION;
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 public class SubmitConfirmActivity extends AppCompatActivity {
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 321;
     static final int RESULT_BACK = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +73,35 @@ public class SubmitConfirmActivity extends AppCompatActivity {
                 .beginTransaction()
                 .add(R.id.fragment_container, profileFragment)
                 .commit();
+
+        if (!arePermissionsGranted()) {
+            requestPermissions(
+                    new String[]{
+                            ACCESS_FINE_LOCATION,
+                            ACCESS_BACKGROUND_LOCATION
+                    },
+                    LOCATION_PERMISSION_REQUEST_CODE
+            );
+        }
     }
 
+    private boolean arePermissionsGranted() {
+        return checkSelfPermission(ACCESS_FINE_LOCATION) == PERMISSION_GRANTED
+                || checkSelfPermission(ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (!arePermissionsGranted()) {
+            requestPermissions(
+                    new String[]{
+                            ACCESS_FINE_LOCATION,
+                            ACCESS_BACKGROUND_LOCATION
+                    },
+                    LOCATION_PERMISSION_REQUEST_CODE
+            );
+        }
+    }
 }

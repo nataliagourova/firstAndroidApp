@@ -35,12 +35,17 @@
 
 package com.example.helloworldnataliasapplication;
 
+import android.content.Context;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +55,7 @@ import com.example.helloworldnataliasapplication.viewmodels.FirebaseMatchesViewM
 import java.util.function.Consumer;
 
 public class MatchesFragment extends Fragment {
+    LocationManager locationManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,7 @@ public class MatchesFragment extends Fragment {
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         View view = inflater.inflate(R.layout.matches_grid_fragment, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -82,5 +89,30 @@ public class MatchesFragment extends Fragment {
         viewModel.getMatches(adapter::setMatches);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        showLocationSettingsDialogIfNeeded();
+    }
+
+    private void showLocationSettingsDialogIfNeeded() {
+        if (!locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            showAlert();
+        }
+    }
+
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        dialog.setTitle(R.string.enable_location_dialog_title)
+                .setCancelable(false)
+                .setMessage(getString(R.string.enable_location_services_message))
+                .setPositiveButton(R.string.location_settings_btn, (paramDialogInterface, paramInt) -> {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                });
+        dialog.show();
     }
 }

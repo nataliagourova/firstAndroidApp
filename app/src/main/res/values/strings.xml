@@ -21,4 +21,7 @@
     <string name="delete">delete</string>
     <string name="update">update</string>
     <string name="a_picture_of_the_users_photo">a_picture_of_the_users_photo</string>
+    <string name="enable_location_dialog_title">Enable location services</string>
+    <string name="enable_location_services_message">Please enable location services to continue</string>
+    <string name="location_settings_btn">Location Settings</string>
 </resources>

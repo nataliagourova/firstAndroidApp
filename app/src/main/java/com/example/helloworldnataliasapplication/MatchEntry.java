@@ -30,7 +30,7 @@ public class MatchEntry {
     public String uid;
     public Boolean liked;
     public String lat;
-    public String longtitude;
+    public String longitude;
 
     public MatchEntry() { }
 
@@ -39,13 +39,13 @@ public class MatchEntry {
                       String uid,
                       Boolean liked,
                       String lat,
-                      String longtitude) {
+                      String longitude) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.uid = uid;
         this.liked = liked;
         this.lat = lat;
-        this.longtitude = longtitude;
+        this.longitude = longitude;
     }
 
     /**

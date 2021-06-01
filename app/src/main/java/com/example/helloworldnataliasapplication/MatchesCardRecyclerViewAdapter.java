@@ -1,6 +1,7 @@
 package com.example.helloworldnataliasapplication;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Adapter used to show a simple grid of products.
@@ -19,14 +21,19 @@ import java.util.function.Consumer;
 
 public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<MatchesCardViewHolder> {
 
+    private static final double METERS_IN_MILE = 1609.34;
     private Consumer<MatchEntry> matchLikedListener;
     private Context appContext;
-    private List<MatchEntry> matchesList;
+    private List<MatchEntry> fullMatchesList;
+    private List<MatchEntry> filteredMatchesList;
     private ImageRequester imageRequester;
+    private Location location;
+    private double matchRadiusMeters;
 
     MatchesCardRecyclerViewAdapter(Context appContext) {
         this.appContext = appContext;
-        this.matchesList = new ArrayList<>();
+        this.fullMatchesList = new ArrayList<>();
+        this.filteredMatchesList = new ArrayList<>();
         imageRequester = ImageRequester.getInstance(appContext);
         this.matchLikedListener = null;
     }
@@ -36,8 +43,26 @@ public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<Matches
     }
 
     public void setMatches(List<MatchEntry> matches) {
-        this.matchesList = new ArrayList<>(matches);
+        this.fullMatchesList = new ArrayList<>(matches);
+        this.filteredMatchesList = filterMatchesByRange(matches);
         notifyDataSetChanged();
+    }
+
+    private List<MatchEntry> filterMatchesByRange(List<MatchEntry> matches) {
+        if (location == null) {
+            return new ArrayList<>(matches);
+        }
+        return matches
+                .stream()
+                .filter(this::matchWithinRadius)
+                .collect(Collectors.toList());
+    }
+
+    private boolean matchWithinRadius(MatchEntry match) {
+        Location matchLocation = new Location("Match location");
+        matchLocation.setLatitude(Double.parseDouble(match.lat));
+        matchLocation.setLongitude(Double.parseDouble(match.longitude));
+        return matchLocation.distanceTo(location) < matchRadiusMeters;
     }
 
     @NonNull
@@ -49,8 +74,8 @@ public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<Matches
 
     @Override
     public void onBindViewHolder(@NonNull MatchesCardViewHolder holder, int position) {
-        if (matchesList != null && position < matchesList.size()) {
-            MatchEntry match = matchesList.get(position);
+        if (filteredMatchesList != null && position < filteredMatchesList.size()) {
+            MatchEntry match = filteredMatchesList.get(position);
             holder.matchesName.setText(match.name);
             imageRequester.setImageFromUrl(holder.matchesImage, match.imageUrl);
             int likeButtonImage =
@@ -79,6 +104,13 @@ public class MatchesCardRecyclerViewAdapter extends RecyclerView.Adapter<Matches
 
     @Override
     public int getItemCount() {
-        return matchesList.size();
+        return filteredMatchesList.size();
+    }
+
+    public void filterMatches(Location location, double matchRadiusMiles) {
+        this.location = location;
+        this.matchRadiusMeters = matchRadiusMiles * METERS_IN_MILE;
+        this.filteredMatchesList = filterMatchesByRange(this.fullMatchesList);
+        notifyDataSetChanged();
     }
 }

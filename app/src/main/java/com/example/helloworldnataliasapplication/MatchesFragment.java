@@ -38,6 +38,7 @@ package com.example.helloworldnataliasapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -61,10 +62,13 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class MatchesFragment extends Fragment {
-    private static final long EVERY_MINUTE = 60_1000;
-    private static final float MIN_DISTANCE_MILES = 10.0f;
+    private static final long MIN_EVERY_SECOND = 1000;
+    private static final float NO_MIN_DISTANCE = 0.0f;
+    private static final double MATCH_RADIUS_10_MI = 10.0;
 
     LocationManager locationManager;
+    MatchesCardRecyclerViewAdapter adapter;
+    LocationListener locationListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,13 +78,13 @@ public class MatchesFragment extends Fragment {
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        locationListener = this::onLocationUpdated;
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         View view = inflater.inflate(R.layout.matches_grid_fragment, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false));
-        MatchesCardRecyclerViewAdapter adapter =
-                new MatchesCardRecyclerViewAdapter(getActivity().getApplicationContext());
+        adapter = new MatchesCardRecyclerViewAdapter(getActivity().getApplicationContext());
         recyclerView.setAdapter(adapter);
         int largePadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing);
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.shr_product_grid_spacing_small);
@@ -120,9 +124,15 @@ public class MatchesFragment extends Fragment {
         locationManager
                 .requestLocationUpdates(
                         LocationManager.NETWORK_PROVIDER,
-                        EVERY_MINUTE,
-                        MIN_DISTANCE_MILES,
-                        this::onLocationUpdated);
+                        MIN_EVERY_SECOND,
+                        NO_MIN_DISTANCE,
+                        locationListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        locationManager.removeUpdates(locationListener);
     }
 
     private boolean isLocationEnabled() {
@@ -152,6 +162,7 @@ public class MatchesFragment extends Fragment {
     }
 
     private void onLocationUpdated(Location location) {
+        adapter.filterMatches(location, MATCH_RADIUS_10_MI);
         Toast.makeText(
                 getActivity(),
                 "Location: " + location.getLongitude() + " longitude, " + location.getLatitude() + "latitude",

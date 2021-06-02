@@ -6,6 +6,13 @@
     android:orientation="vertical"
     tools:context=".SettingsFragment">
 
+    <Button
+        android:id="@+id/save_settings_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Settings"
+        />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,34 +24,63 @@
         android:layout_height="wrap_content" />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Reminder Time:"/>
+    <EditText
         android:id="@+id/reminderTime"
-        android:layout_below="@+id/email"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Search Range:"/>
+    <EditText
         android:id="@+id/searchRange"
-        android:layout_below="@+id/reminderTime"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Gender:"/>
+    <EditText
         android:id="@+id/gender"
-        android:layout_below="@+id/searchRange"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Is Private:"/>
+    <EditText
         android:id="@+id/privateAccount"
-        android:layout_below="@+id/gender"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="From Age:"/>
+    <EditText
         android:id="@+id/ageRangeStart"
-        android:layout_below="@+id/privateAccount"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <TextView
-        android:id="@+id/ageRangeEnd"
-        android:layout_below="@+id/ageRangeStart"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="To Age:"/>
+    <EditText
+        android:id="@+id/ageRangeEnd"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

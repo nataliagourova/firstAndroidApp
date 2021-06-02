@@ -41,7 +41,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,25 +49,30 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.helloworldnataliasapplication.entity.Settings;
 import com.example.helloworldnataliasapplication.viewmodels.FirebaseMatchesViewModel;
+import com.example.helloworldnataliasapplication.viewmodels.SettingsViewModel;
 
 import java.util.function.Consumer;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS;
 
 public class MatchesFragment extends Fragment {
     private static final long MIN_EVERY_SECOND = 1000;
     private static final float NO_MIN_DISTANCE = 0.0f;
-    private static final double MATCH_RADIUS_10_MI = 10.0;
 
     LocationManager locationManager;
     MatchesCardRecyclerViewAdapter adapter;
     LocationListener locationListener;
+    int searchRadius = 10;
+    Location location = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,6 +104,11 @@ public class MatchesFragment extends Fragment {
                     }
                 });
         viewModel.getMatches(adapter::setMatches);
+
+
+        new ViewModelProvider(this).get(SettingsViewModel.class)
+                .loadSettings(this.getContext())
+                .observe(getViewLifecycleOwner(), this::onSettingsLoaded);
 
         return view;
     }
@@ -150,7 +159,7 @@ public class MatchesFragment extends Fragment {
                 .setCancelable(false)
                 .setMessage(getString(R.string.enable_location_services_message))
                 .setPositiveButton(R.string.location_settings_btn, (paramDialogInterface, paramInt) -> {
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    Intent myIntent = new Intent(ACTION_LOCATION_SOURCE_SETTINGS);
                     startActivity(myIntent);
                 });
         dialog.show();
@@ -162,12 +171,26 @@ public class MatchesFragment extends Fragment {
     }
 
     private void onLocationUpdated(Location location) {
-        adapter.filterMatches(location, MATCH_RADIUS_10_MI);
+        this.location = location;
+        filterMatches();
+    }
+
+    private void onSettingsLoaded(Settings settings) {
+        this.searchRadius = settings.getSearchRange();
+        filterMatches();
+    }
+
+    private void filterMatches() {
+        adapter.filterMatches(this.location, this.searchRadius);
         Toast.makeText(
                 getActivity(),
-                "Location: " + location.getLongitude() + " longitude, " + location.getLatitude() + "latitude",
-                Toast.LENGTH_SHORT)
+                "Location: "
+                        + (location == null ? "n/a" : location.getLongitude())
+                        + " longitude, "
+                        + (location == null ? "n/a" : location.getLatitude())
+                        + " latitude. Search radius: "
+                        + this.searchRadius,
+                Toast.LENGTH_LONG)
                 .show();
-
     }
 }
